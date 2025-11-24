@@ -48,6 +48,17 @@ export function WineCard({ wine, onReset }) {
                     </p>
                 </div>
 
+                {wine.scannedText && (
+                    <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                        <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                            Detected Text (OCR)
+                        </h3>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 font-mono break-words">
+                            {wine.scannedText}
+                        </p>
+                    </div>
+                )}
+
                 <div className="flex items-center justify-between pt-6 border-t border-gray-100 dark:border-gray-700">
                     <div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Estimated Price</p>
