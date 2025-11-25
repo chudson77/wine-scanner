@@ -16,10 +16,10 @@ export const identifyWineWithGemini = async (imageFile, apiKey) => {
     "region": "Region and Country",
     "type": "Type of wine (Red, White, Sparkling, etc.)",
     "rating": 4.5,
-    "price": { "value": 0, "currency": "USD" },
+    "price": { "value": 0, "currency": "GBP" },
     "review": "A short, professional tasting note/review (max 3 sentences)."
   }
-  If you cannot identify the wine, make a best guess based on the visible text and style. Ensure the price is a realistic estimate.`;
+  If you cannot identify the wine, make a best guess based on the visible text and style. Ensure the price is a realistic estimate in GBP (British Pounds).`;
 
     const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,

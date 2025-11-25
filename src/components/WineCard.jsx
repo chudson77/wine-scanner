@@ -63,7 +63,7 @@ export function WineCard({ wine, onReset }) {
                     <div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Estimated Price</p>
                         <div className="flex items-center text-xl font-bold text-gray-900 dark:text-white">
-                            <DollarSign className="w-5 h-5 text-green-500" />
+                            <span className="text-green-500 mr-1">£</span>
                             {wine.price.value.toLocaleString()}
                         </div>
                     </div>
