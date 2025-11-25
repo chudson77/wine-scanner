@@ -6,7 +6,7 @@ export const identifyWineWithGemini = async (imageFile, apiKey) => {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Convert image to Base64
     const base64Image = await new Promise((resolve) => {
