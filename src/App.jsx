@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { CameraCapture } from './components/CameraCapture';
 import { WineCard } from './components/WineCard';
-import { mockIdentifyWine } from './services/wineService';
-import { Wine, Loader2 } from 'lucide-react';
+import { identifyWineWithGemini } from './services/wineService';
+import { Wine, Loader2, Key } from 'lucide-react';
 
 function App() {
   const [status, setStatus] = useState('idle'); // idle, analyzing, success, error
   const [wineData, setWineData] = useState(null);
+  const [apiKey, setApiKey] = useState('');
+  const [showKeyInput, setShowKeyInput] = useState(true);
 
   const handleCapture = async (file) => {
+    if (!apiKey) {
+      alert("Please enter a valid Google Gemini API Key first.");
+      return;
+    }
+
     setStatus('analyzing');
     try {
-      const data = await mockIdentifyWine(file);
+      const data = await identifyWineWithGemini(file, apiKey);
       setWineData(data);
       setStatus('success');
     } catch (error) {
@@ -28,13 +35,33 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
-        <header className="flex items-center justify-center gap-3 mb-12 pt-8">
-          <div className="p-3 bg-wine-600 rounded-2xl shadow-lg shadow-wine-600/20">
-            <Wine className="w-8 h-8 text-white" />
+        <header className="flex flex-col items-center justify-center gap-6 mb-12 pt-8">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-wine-600 rounded-2xl shadow-lg shadow-wine-600/20">
+              <Wine className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Sommelier<span className="text-wine-600">AI</span>
+            </h1>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Sommelier<span className="text-wine-600">AI</span>
-          </h1>
+
+          {showKeyInput && (
+            <div className="w-full max-w-md animate-in fade-in slide-in-from-top-4">
+              <div className="relative flex items-center">
+                <Key className="absolute left-3 w-4 h-4 text-gray-400" />
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="Enter Google Gemini API Key"
+                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-wine-500 transition-all"
+                />
+              </div>
+              <p className="mt-2 text-xs text-center text-gray-400">
+                Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-wine-600 hover:underline">Google AI Studio</a>
+              </p>
+            </div>
+          )}
         </header>
 
         <main className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -53,7 +80,7 @@ function App() {
                 </div>
               </div>
               <p className="text-lg font-medium text-gray-600 dark:text-gray-300 animate-pulse">
-                Analyzing label...
+                Asking the Sommelier...
               </p>
             </div>
           )}
@@ -65,7 +92,7 @@ function App() {
           {status === 'error' && (
             <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4">
               <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-2xl">
-                <p className="font-medium">Could not identify wine. Please try again.</p>
+                <p className="font-medium">Could not identify wine. Check your API Key and try again.</p>
               </div>
               <button
                 onClick={handleReset}
@@ -78,7 +105,7 @@ function App() {
         </main>
 
         <footer className="mt-auto py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          <p>© 2025 SommelierAI. Demo Application.</p>
+          <p>© 2025 SommelierAI. Powered by Google Gemini.</p>
         </footer>
       </div>
     </div>
