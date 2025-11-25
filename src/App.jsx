@@ -23,6 +23,7 @@ function App() {
       setStatus('success');
     } catch (error) {
       console.error('Error identifying wine:', error);
+      setWineData({ error: error.message || "Unknown error occurred" });
       setStatus('error');
     }
   };
@@ -91,8 +92,11 @@ function App() {
 
           {status === 'error' && (
             <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4">
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-2xl">
-                <p className="font-medium">Could not identify wine. Check your API Key and try again.</p>
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-2xl max-w-md mx-auto overflow-hidden">
+                <p className="font-medium mb-2">Could not identify wine.</p>
+                <p className="text-xs font-mono bg-red-100 dark:bg-red-950/50 p-2 rounded text-left break-all">
+                  {wineData?.error || "Check your API Key and try again."}
+                </p>
               </div>
               <button
                 onClick={handleReset}
