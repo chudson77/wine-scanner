@@ -33,13 +33,35 @@ function App() {
     setWineData(null);
   };
 
-  <p className="mt-2 text-xs text-center text-gray-400">
-    Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-wine-600 hover:underline">Google AI Studio</a>
-  </p>
-            </div >
-          )
-}
-        </header >
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-wine-50 dark:from-gray-900 dark:to-wine-950 text-gray-900 dark:text-gray-50 flex flex-col">
+      <div className="container mx-auto px-4 py-8 flex flex-col flex-grow">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-extrabold text-wine-700 dark:text-wine-300 mb-2">
+            SommelierAI
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+            Identify your wine with a snap!
+          </p>
+
+          {showKeyInput && (
+            <div className="w-full max-w-md mx-auto animate-in fade-in slide-in-from-top-4">
+              <div className="relative flex items-center">
+                <Key className="absolute left-3 w-4 h-4 text-gray-400" />
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="Enter Google Gemini API Key"
+                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-wine-500 transition-all"
+                />
+              </div>
+              <p className="mt-2 text-xs text-center text-gray-400">
+                Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-wine-600 hover:underline">Google AI Studio</a>
+              </p>
+            </div>
+          )}
+        </header>
 
         <main className="flex flex-col items-center justify-center min-h-[60vh]">
           {status === 'idle' && (
