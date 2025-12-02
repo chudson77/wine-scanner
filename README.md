@@ -78,6 +78,4 @@ This project is configured for deployment on **GitHub Pages**.
 4.  **Save**: Your review is saved to your "My Reviews" list.
 5.  **Share**: Tap the Share icon on any wine card to send your review to a friend!
 
----
 
-*Built with ❤️ by Carl Hudson & Antigravity*
