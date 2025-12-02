@@ -60,8 +60,8 @@ export function ReviewList() {
                                 <Star
                                     key={star}
                                     className={`w-3.5 h-3.5 ${star <= review.rating
-                                            ? "text-terracotta-400 fill-terracotta-400"
-                                            : "text-stone-200 dark:text-stone-700"
+                                        ? "text-terracotta-400 fill-terracotta-400"
+                                        : "text-stone-200 dark:text-stone-700"
                                         }`}
                                 />
                             ))}
@@ -82,3 +82,5 @@ export function ReviewList() {
         </div>
     );
 }
+
+export default ReviewList;

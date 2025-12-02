@@ -201,3 +201,5 @@ export function WineCard({ wine, onReset }) {
         </div>
     );
 }
+
+export default WineCard;

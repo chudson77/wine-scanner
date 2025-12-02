@@ -1,4 +1,3 @@
-```
 import React, { useState } from 'react';
 import CameraCapture from './components/CameraCapture';
 import WineCard from './components/WineCard';
@@ -172,8 +171,9 @@ function App() {
             </>
           )}
         </main>
-      </div >
-      );
+      </div>
+    </div>
+  );
 }
 
-      export default App;
+export default App;
