@@ -1,6 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-wine-50 text-wine-900 antialiased;
+  }
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -38,6 +46,7 @@ body {
     color: #213547;
     background-color: #ffffff;
   }
+
   body {
     background-color: #f9fafb;
   }
