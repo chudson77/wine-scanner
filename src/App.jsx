@@ -39,9 +39,18 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-wine-50 dark:from-gray-900 dark:to-wine-950 text-gray-900 dark:text-gray-50 flex flex-col">
       <div className="container mx-auto px-4 py-8 flex flex-col flex-grow">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold text-wine-700 dark:text-wine-300 mb-2">
-            SommelierAI
-          </h1>
+          <button
+            onClick={() => {
+              setStatus('idle');
+              setWineData(null);
+              setView('scan');
+            }}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <h1 className="text-4xl font-extrabold text-wine-700 dark:text-wine-300 mb-2">
+              SommelierAI
+            </h1>
+          </button>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
             Identify your wine with a snap!
           </p>
@@ -69,8 +78,8 @@ function App() {
             <button
               onClick={() => setView('scan')}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === 'scan'
-                  ? 'bg-wine-600 text-white shadow-lg shadow-wine-600/20'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-wine-600 text-white shadow-lg shadow-wine-600/20'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
             >
               <Camera className="w-4 h-4" />
@@ -79,8 +88,8 @@ function App() {
             <button
               onClick={() => setView('reviews')}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === 'reviews'
-                  ? 'bg-wine-600 text-white shadow-lg shadow-wine-600/20'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-wine-600 text-white shadow-lg shadow-wine-600/20'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
             >
               <List className="w-4 h-4" />
