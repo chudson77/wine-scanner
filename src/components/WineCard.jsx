@@ -5,42 +5,41 @@ import { saveReview } from '../services/reviewService';
 
 export function WineCard({ wine, onReset }) {
     const [isReviewing, setIsReviewing] = useState(false);
-    const [userRating, setUserRating] = useState(5);
+    const [userRating, setUserRating] = useState(0);
     const [userNotes, setUserNotes] = useState('');
+    const [inCellar, setInCellar] = useState(false);
     const [saved, setSaved] = useState(false);
 
     if (!wine) return null;
 
     const handleShare = async () => {
-        const shareData = {
-            title: `Review: ${wine.name}`,
-            text: `🍷 I just tried ${wine.name} (${wine.region})!\n\nMy Rating: ${userRating}/5\nPrice: £${wine.price.value}\n\n${userNotes || wine.review}`,
-            url: window.location.href,
-        };
-
         if (navigator.share) {
             try {
-                await navigator.share(shareData);
-            } catch (err) {
-                console.log('Error sharing:', err);
+                await navigator.share({
+                    title: `Review: ${wine.name}`,
+                    text: `I just scanned ${wine.name} (${wine.region}) with SommelierAI!\n\nMy Rating: ${userRating}/5\nNotes: ${userNotes}\n\n${wine.review}`,
+                    url: window.location.href,
+                });
+            } catch (error) {
+                console.log('Error sharing:', error);
             }
         } else {
-            // Fallback for desktop/unsupported
-            navigator.clipboard.writeText(shareData.text);
-            alert('Review copied to clipboard!');
+            alert('Sharing is not supported on this browser.');
         }
     };
 
     const handleSaveReview = () => {
-        saveReview(wine, userRating, userNotes);
+        if (userRating === 0) {
+            alert("Please select a rating!");
+            return;
+        }
+        saveReview(wine, userRating, userNotes, inCellar);
         setSaved(true);
         setIsReviewing(false);
-        // Reset after a delay so they can review again if needed, or just keep it saved state
-        setTimeout(() => setSaved(false), 3000);
     };
 
     return (
-        <div className="w-full max-w-md bg-white dark:bg-stone-800 rounded-4xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 border border-stone-100 dark:border-stone-700">
+        <div className="w-full max-w-md bg-white dark:bg-stone-800 rounded-4xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 border border-stone-100 dark:border-stone-700 mb-24">
             <div className="relative h-72 bg-stone-100 dark:bg-stone-700">
                 <img
                     src={wine.image}
@@ -131,6 +130,20 @@ export function WineCard({ wine, onReset }) {
                                     ))}
                                 </div>
                             </div>
+
+                            <label className="flex items-center gap-3 p-3 bg-stone-50 dark:bg-stone-900 rounded-2xl cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${inCellar ? 'border-terracotta-500 bg-terracotta-500' : 'border-stone-300 dark:border-stone-600'}`}>
+                                    {inCellar && <Check className="w-3 h-3 text-white" />}
+                                </div>
+                                <input
+                                    type="checkbox"
+                                    checked={inCellar}
+                                    onChange={(e) => setInCellar(e.target.checked)}
+                                    className="hidden"
+                                />
+                                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Add to Cellar</span>
+                            </label>
+
                             <div>
                                 <label className="block text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest mb-2">Your Notes</label>
                                 <textarea

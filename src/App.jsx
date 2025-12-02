@@ -1,16 +1,20 @@
+```
 import React, { useState } from 'react';
-import { CameraCapture } from './components/CameraCapture';
-import { WineCard } from './components/WineCard';
-import { ReviewList } from './components/ReviewList';
+import CameraCapture from './components/CameraCapture';
+import WineCard from './components/WineCard';
+import ReviewList from './components/ReviewList';
 import { identifyWineWithGemini } from './services/wineService';
 import { Wine, Loader2, Key, List, Camera } from 'lucide-react';
+import BottomNav from './components/BottomNav';
+import HomeDashboard from './components/HomeDashboard';
+import CellarList from './components/CellarList';
 
 function App() {
   const [status, setStatus] = useState('idle'); // idle, analyzing, success, error
   const [wineData, setWineData] = useState(null);
   const [apiKey, setApiKey] = useState('');
   const [showKeyInput, setShowKeyInput] = useState(true);
-  const [view, setView] = useState('scan'); // 'scan' or 'reviews'
+  const [view, setView] = useState('home'); // 'home', 'cellar', 'scan', 'reviews'
 
   // Load API key from storage on mount
   React.useEffect(() => {
@@ -59,27 +63,24 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f5] dark:bg-stone-900 text-stone-800 dark:text-stone-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f7f7f5] dark:bg-stone-900 text-stone-800 dark:text-stone-100 flex flex-col font-sans pb-20">
       <div className="container mx-auto px-4 py-8 flex flex-col flex-grow">
-        <header className="text-center mb-8">
+        <header className="text-center mb-6">
           <button
             onClick={() => {
               setStatus('idle');
               setWineData(null);
-              setView('scan');
+              setView('home');
             }}
             className="hover:opacity-80 transition-opacity"
           >
-            <h1 className="text-4xl font-bold text-sage-800 dark:text-sage-200 mb-2 tracking-tight">
+            <h1 className="text-3xl font-bold text-sage-800 dark:text-sage-200 tracking-tight">
               Sommelier<span className="text-terracotta-500">AI</span>
             </h1>
           </button>
-          <p className="text-lg text-stone-500 dark:text-stone-400 mb-6 font-medium">
-            Discover wine, naturally.
-          </p>
 
           {showKeyInput ? (
-            <div className="w-full max-w-md mx-auto animate-in fade-in slide-in-from-top-4 mb-6">
+            <div className="w-full max-w-md mx-auto animate-in fade-in slide-in-from-top-4 mt-6">
               <div className="relative flex items-center">
                 <Key className="absolute left-3 w-4 h-4 text-stone-400" />
                 <input
@@ -95,48 +96,38 @@ function App() {
               </p>
             </div>
           ) : (
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mt-2">
               <button
                 onClick={handleDisconnectKey}
-                className="text-xs text-stone-400 hover:text-terracotta-500 transition-colors flex items-center gap-1"
+                className="text-[10px] text-stone-400 hover:text-terracotta-500 transition-colors flex items-center gap-1"
               >
                 <Key className="w-3 h-3" />
-                Disconnect API Key
+                Disconnect Key
               </button>
             </div>
           )}
-
-          {/* Navigation Toggle */}
-          <div className="flex justify-center gap-3 mb-4">
-            <button
-              onClick={() => setView('scan')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${view === 'scan'
-                  ? 'bg-sage-600 text-white shadow-lg shadow-sage-600/20'
-                  : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
-                }`}
-            >
-              <Camera className="w-4 h-4" />
-              Scan
-            </button>
-            <button
-              onClick={() => setView('reviews')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${view === 'reviews'
-                  ? 'bg-sage-600 text-white shadow-lg shadow-sage-600/20'
-                  : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
-                }`}
-            >
-              <List className="w-4 h-4" />
-              My Reviews
-            </button>
-          </div>
         </header>
 
-        <main className="flex flex-col items-center justify-center min-h-[50vh]">
-          {view === 'reviews' ? (
+        <main className="flex flex-col items-center justify-center flex-grow">
+          {view === 'home' && (
+            <HomeDashboard onViewChange={setView} />
+          )}
+
+          {view === 'cellar' && (
             <div className="w-full max-w-md mx-auto">
+              <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 font-serif mb-4 px-2">Your Cellar</h2>
+              <CellarList />
+            </div>
+          )}
+
+          {view === 'reviews' && (
+            <div className="w-full max-w-md mx-auto">
+              <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 font-serif mb-4 px-2">My Reviews</h2>
               <ReviewList />
             </div>
-          ) : (
+          )}
+
+          {view === 'scan' && (
             <>
               {status === 'idle' && (
                 <div className="w-full animate-in fade-in zoom-in duration-500">
@@ -181,14 +172,8 @@ function App() {
             </>
           )}
         </main>
-
-
-        <footer className="mt-auto py-8 text-center text-sm text-gray-400 dark:text-gray-500">
-          <p>© 2025 SommelierAI. Powered by Google Gemini.</p>
-        </footer>
       </div >
-    </div >
-  );
+      );
 }
 
-export default App;
+      export default App;
