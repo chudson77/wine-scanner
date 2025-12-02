@@ -78,4 +78,11 @@ This project is configured for deployment on **GitHub Pages**.
 4.  **Save**: Your review is saved to your "My Reviews" list.
 5.  **Share**: Tap the Share icon on any wine card to send your review to a friend!
 
+## Security & Privacy 🔒
+
+*   **API Keys**: Your Google Gemini API Key is stored locally in your browser's secure `localStorage`. It is **never** sent to any server other than Google's official API endpoints.
+*   **Data Storage**: All personal reviews and ratings are stored entirely on your device. Clearing your browser data will remove them.
+*   **Camera Access**: The app only requests camera permission when you explicitly click the "Scan" button.
+*   **Best Practice**: If you are on a shared device, remember to click "Disconnect API Key" when you are finished.
+
 
