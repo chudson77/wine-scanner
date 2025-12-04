@@ -172,6 +172,8 @@ function App() {
           )}
         </main>
       </div>
+
+      <BottomNav currentView={view} onViewChange={setView} />
     </div>
   );
 }

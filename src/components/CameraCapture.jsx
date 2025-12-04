@@ -45,6 +45,33 @@ export function CameraCapture({ onCapture }) {
                 <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-wine-500 to-transparent animate-[scan_2s_ease-in-out_infinite]" />
                 </div>
+
+                <div className="flex flex-col items-center justify-center gap-4 p-8">
+                    <div className="w-20 h-20 bg-terracotta-100 dark:bg-terracotta-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Camera className="w-10 h-10 text-terracotta-600 dark:text-terracotta-400" />
+                    </div>
+
+                    <div className="text-center space-y-2">
+                        <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+                            Scan Wine Label
+                        </h3>
+                        <p className="text-sm text-stone-500 dark:text-stone-400">
+                            Tap to take a photo or upload an image
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-xs text-stone-400">
+                        <div className="flex items-center gap-1">
+                            <Camera className="w-4 h-4" />
+                            <span>Camera</span>
+                        </div>
+                        <span>•</span>
+                        <div className="flex items-center gap-1">
+                            <Upload className="w-4 h-4" />
+                            <span>Upload</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
