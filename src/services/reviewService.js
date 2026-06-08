@@ -24,6 +24,7 @@ export const saveReview = (wine, rating, notes, inCellar = false, quantity = 1) 
                 region: wine.region,
                 type: wine.type,
                 imageId: wine.imageId,
+                rating: wine.rating ?? null,
                 price: wine.price,
                 foodPairings: wine.foodPairings ?? [],
                 grapes: wine.grapes ?? [],

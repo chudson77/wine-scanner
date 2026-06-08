@@ -3,12 +3,14 @@ import { Wine, Star, Trash2, Package, Download, Search, Clock } from 'lucide-rea
 import { getCellarWines, deleteReview, updateReview, exportReviews } from '../services/reviewService';
 import WineImage from './WineImage';
 import ConfirmDialog from './ConfirmDialog';
+import WineDetailSheet from './WineDetailSheet';
 
 const TYPES = ['All', 'Red', 'White', 'Sparkling', 'Rosé', 'Dessert', 'Fortified'];
 
 const CellarList = () => {
     const [wines, setWines] = useState([]);
     const [confirmId, setConfirmId] = useState(null);
+    const [detailReview, setDetailReview] = useState(null);
     const [search, setSearch] = useState('');
     const [typeFilter, setTypeFilter] = useState('All');
 
@@ -128,9 +130,13 @@ const CellarList = () => {
 
             <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 pb-24">
                 {filtered.map((item) => (
-                    <div key={item.id} className="bg-white dark:bg-stone-800 rounded-3xl p-4 shadow-sm border border-stone-100 dark:border-stone-700 flex flex-col relative group">
+                    <div
+                        key={item.id}
+                        className="bg-white dark:bg-stone-800 rounded-3xl p-4 shadow-sm border border-stone-100 dark:border-stone-700 flex flex-col relative group cursor-pointer active:scale-[0.98] transition-transform"
+                        onClick={() => setDetailReview(item)}
+                    >
                         <button
-                            onClick={() => setConfirmId(item.id)}
+                            onClick={e => { e.stopPropagation(); setConfirmId(item.id); }}
                             className="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/20 backdrop-blur-sm rounded-full text-stone-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                         >
                             <Trash2 className="w-4 h-4" />
@@ -165,7 +171,10 @@ const CellarList = () => {
                                 </div>
                             )}
 
-                            <div className="flex items-center gap-1.5 mt-2 bg-stone-50 dark:bg-stone-900/50 rounded-xl px-2 py-1.5">
+                            <div
+                            className="flex items-center gap-1.5 mt-2 bg-stone-50 dark:bg-stone-900/50 rounded-xl px-2 py-1.5"
+                            onClick={e => e.stopPropagation()}
+                        >
                                 <Package className="w-3 h-3 text-stone-400 flex-shrink-0" />
                                 <button
                                     onClick={() => updateQuantity(item.id, -1)}
@@ -195,6 +204,10 @@ const CellarList = () => {
                     onConfirm={handleDelete}
                     onCancel={() => setConfirmId(null)}
                 />
+            )}
+
+            {detailReview && (
+                <WineDetailSheet review={detailReview} onClose={() => setDetailReview(null)} />
             )}
         </>
     );

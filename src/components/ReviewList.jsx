@@ -3,12 +3,14 @@ import { Star, Trash2, Calendar, Download, Search } from 'lucide-react';
 import { getReviews, deleteReview, exportReviews } from '../services/reviewService';
 import WineImage from './WineImage';
 import ConfirmDialog from './ConfirmDialog';
+import WineDetailSheet from './WineDetailSheet';
 
 const TYPES = ['All', 'Red', 'White', 'Sparkling', 'Rosé', 'Dessert', 'Fortified'];
 
 export function ReviewList() {
     const [reviews, setReviews] = useState([]);
     const [confirmId, setConfirmId] = useState(null);
+    const [detailReview, setDetailReview] = useState(null);
     const [search, setSearch] = useState('');
     const [typeFilter, setTypeFilter] = useState('All');
     const [minRating, setMinRating] = useState(0);
@@ -122,7 +124,7 @@ export function ReviewList() {
             ) : (
                 <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 pb-24">
                     {filtered.map((review) => (
-                        <div key={review.id} className="bg-white dark:bg-stone-800 rounded-3xl p-5 shadow-sm border border-stone-100 dark:border-stone-700 flex gap-4">
+                        <div key={review.id} className="bg-white dark:bg-stone-800 rounded-3xl p-5 shadow-sm border border-stone-100 dark:border-stone-700 flex gap-4 cursor-pointer active:scale-[0.99] transition-transform" onClick={() => setDetailReview(review)}>
                             <div className="flex-shrink-0 w-16 h-16 bg-sage-50 dark:bg-sage-900/30 rounded-2xl overflow-hidden border border-sage-100 dark:border-sage-800">
                                 <WineImage imageId={review.wine.imageId} name={review.wine.name} />
                             </div>
@@ -138,7 +140,7 @@ export function ReviewList() {
                                         </p>
                                     </div>
                                     <button
-                                        onClick={() => setConfirmId(review.id)}
+                                        onClick={e => { e.stopPropagation(); setConfirmId(review.id); }}
                                         className="text-stone-300 hover:text-red-500 transition-colors p-1 flex-shrink-0"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -178,6 +180,10 @@ export function ReviewList() {
                     onConfirm={handleDelete}
                     onCancel={() => setConfirmId(null)}
                 />
+            )}
+
+            {detailReview && (
+                <WineDetailSheet review={detailReview} onClose={() => setDetailReview(null)} />
             )}
         </>
     );
