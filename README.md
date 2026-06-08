@@ -1,88 +1,119 @@
-# SommelierAI - Wine Scanner App 🍷
+# SommelierAI – Wine Scanner App
 
-SommelierAI is a modern web application that allows users to scan wine labels, identify the wine using Google Gemini AI, and get detailed information including ratings, reviews, and pricing. Users can also save their own personal reviews and share them with friends.
+SommelierAI is a mobile-first web app that uses Google Gemini AI to identify wine labels from photos. Scan any bottle to instantly get a professional tasting note, vintage details, taste profile, food pairings, drinking window, and estimated price — then build your own review history and cellar tracker, all stored privately on your device.
 
-## Features ✨
+## Features
 
-*   **AI-Powered Identification**: Uses Google Gemini 2.5 Flash to analyze wine labels from images.
-*   **Instant Details**: Returns wine name, region, type, estimated price (GBP), and a professional tasting note.
-*   **Personal Reviews**: Rate wines (1-5 stars) and add your own tasting notes.
-*   **Local Storage**: Reviews are saved directly to your device's browser storage.
-*   **Social Sharing**: Share your reviews with friends via WhatsApp, iMessage, etc., using the native share sheet.
-*   **Responsive Design**: Fully optimized for mobile devices with a premium, app-like feel.
-*   **Dark Mode**: Automatically adapts to your system's color scheme.
+### Wine Identification
+- **Label Scanning** — Take a photo or upload an image of any wine label
+- **AI Analysis** — Google Gemini 2.5 Flash returns detailed wine data including:
+  - Name, vintage year, region, and type
+  - Grape varieties
+  - Professional sommelier tasting note
+  - Taste profile bars (Sweet→Dry, Light→Bold, Soft→Acidic)
+  - Drinking window with vintage conditions note
+  - Food pairings
+  - Estimated retail price (GBP)
+  - AI quality rating
 
-## Tech Stack 🛠️
+### Review & Cellar Management
+- **Personal Reviews** — Rate wines 1–5 stars with your own tasting notes
+- **Cellar Tracker** — Mark bottles as "in cellar" with quantity controls (+/−)
+- **Collection Value** — Live total value of your cellar (price × bottles)
+- **Drinking Windows** — See when each cellar wine is at its peak
+- **Update Quantities** — Adjust bottle counts as you drink them
 
-*   **Frontend**: React, Vite
-*   **Styling**: Tailwind CSS, Lucide React (Icons)
-*   **AI**: Google Gemini API (Multimodal)
-*   **Deployment**: GitHub Pages
+### Discovery
+- **Wine Comparison** — Pick any two reviewed wines for a head-to-head stat comparison
+- **Your Palate** — Personal taste profile card that appears after 3+ reviews, showing your favourite style, top region, favourite grapes, and average rating
+- **Search & Filter** — Filter reviews and cellar by wine type, minimum star rating, and free-text search by name or region
+
+### Data & Export
+- **Export Reviews** — Download your full review history as JSON
+- **Export Cellar** — Download your cellar as CSV (includes vintage, grapes, drinking window)
+- **Persistent Images** — Wine label photos are stored in IndexedDB and survive page refreshes
+
+### UX
+- **Mobile-First** — Optimised for iPhone/Android with native camera and file picker support
+- **Dark Mode** — Automatically adapts to system colour scheme
+- **Social Sharing** — Share any wine review via native share sheet (WhatsApp, iMessage, etc.)
+- **No Alerts** — All confirmations use in-app modal dialogs, no browser popups
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite 7 |
+| Styling | Tailwind CSS, Lucide React |
+| AI | Google Gemini 2.5 Flash (multimodal) |
+| Image Storage | IndexedDB (browser-native) |
+| Review Storage | localStorage |
+| Testing | Vitest, Testing Library, fake-indexeddb |
+| Deployment | Vercel (primary), GitHub Pages (via Actions) |
 
 ## Prerequisites
 
-Before running the project, ensure you have:
+- **Node.js** v18 or higher
+- A **Google Gemini API Key** — get one free from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-*   **Node.js** (v18 or higher) installed.
-*   A **Google Gemini API Key**. You can get one for free from [Google AI Studio](https://aistudio.google.com/app/apikey).
+## Local Development
 
-## Installation & Local Development
+```bash
+# Clone
+git clone https://github.com/chudson77/wine-scanner.git
+cd wine-scanner
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/chudson77/wine-scanner.git
-    cd wine-scanner
-    ```
+# Install dependencies
+npm install
 
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
+# Start dev server
+npm run dev
+```
 
-3.  **Start the development server**:
-    ```bash
-    npm run dev
-    ```
+Open `http://localhost:5173`, paste your Gemini API key into the header input, then scan a wine.
 
-4.  **Open the app**:
-    Visit `http://localhost:5173` in your browser.
+## Testing
 
-5.  **Enter API Key**:
-    Paste your Google Gemini API Key into the input field on the home screen to start scanning.
+```bash
+# Run all tests once
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:coverage
+```
+
+The test suite covers: image upload validation, IndexedDB storage, review CRUD operations, UI component interactions, and error handling (57 tests across 5 files).
 
 ## Deployment
 
-This project is configured for deployment on **GitHub Pages**.
+### Vercel (recommended)
 
-1.  **Build the project**:
-    ```bash
-    npm run build
-    ```
+1. Push to GitHub
+2. Import the repo at [vercel.com](https://vercel.com)
+3. Deploy — no environment variables needed (the API key is entered by users in the UI)
 
-2.  **Deploy**:
-    The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically deploys to GitHub Pages whenever you push to the `main` branch.
+The included `vercel.json` handles SPA routing automatically.
 
-    *   Ensure "Read and write permissions" are enabled in your repository settings under **Actions > General > Workflow permissions**.
+### GitHub Pages
 
-## Version Control Notes
-
-*   **Main Branch**: `main` contains the stable, deployable code.
-*   **Commits**: Follow standard commit message conventions (e.g., "Feature: Add reviews", "Fix: Resolve API error").
-*   **Secrets**: **NEVER** commit your API key to the repository. The app is designed to ask for the key in the UI so it remains local to your browser session.
+The `.github/workflows/deploy.yml` workflow auto-deploys to GitHub Pages on every push to `main`. The build sets `VITE_BASE_PATH=/wine-scanner/` so asset paths resolve correctly under the subdirectory.
 
 ## Usage Guide
 
-1.  **Scan**: Tap the camera icon or "Scan" button to take a photo of a wine label.
-2.  **Analyze**: The AI will identify the wine and show you the details.
-3.  **Review**: Tap "Add Personal Review" to give it a star rating and write your thoughts.
-4.  **Save**: Your review is saved to your "My Reviews" list.
-5.  **Share**: Tap the Share icon on any wine card to send your review to a friend!
+1. **Enter API Key** — Paste your Gemini key into the field in the header (stored locally, never sent anywhere except Google)
+2. **Scan** — Go to Scan, take a photo or upload an image of a wine label
+3. **Review the results** — Taste profile, drinking window, food pairings, and price are shown immediately
+4. **Add a personal review** — Rate it, add notes, and optionally add it to your cellar with a bottle count
+5. **Manage your cellar** — Adjust quantities, track drinking windows, see your total collection value
+6. **Compare wines** — Go to Compare, select two wines, get a side-by-side breakdown
+7. **Export** — Download your data as JSON or CSV at any time
 
-## Security & Privacy 🔒
+## Security & Privacy
 
-*   **API Keys**: Your Google Gemini API Key is stored locally in your browser's secure `localStorage`. It is **never** sent to any server other than Google's official API endpoints.
-*   **Data Storage**: All personal reviews and ratings are stored entirely on your device. Clearing your browser data will remove them.
-*   **Camera Access**: The app only requests camera permission when you explicitly click the "Scan" button.
-*   **Best Practice**: If you are on a shared device, remember to click "Disconnect API Key" when you are finished.
-
-
+- **API Key** — Stored in browser `localStorage`, never sent to any server other than Google's official API. Click "Disconnect Key" on shared devices when finished.
+- **Reviews & Images** — Stored entirely on your device (localStorage for metadata, IndexedDB for photos). Clearing browser data removes everything.
+- **Camera** — Permission is only requested when you tap a capture button.
+- **No backend** — There is no server, database, or user account. All data is local to your browser.
