@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Wine, Star, Trash2, Package, Download } from 'lucide-react';
+import { Wine, Star, Trash2, Package, Download, Search, Clock } from 'lucide-react';
 import { getCellarWines, deleteReview, updateReview, exportReviews } from '../services/reviewService';
 import WineImage from './WineImage';
 import ConfirmDialog from './ConfirmDialog';
 
+const TYPES = ['All', 'Red', 'White', 'Sparkling', 'Rosé', 'Dessert', 'Fortified'];
+
 const CellarList = () => {
     const [wines, setWines] = useState([]);
     const [confirmId, setConfirmId] = useState(null);
+    const [search, setSearch] = useState('');
+    const [typeFilter, setTypeFilter] = useState('All');
 
     const loadWines = () => setWines(getCellarWines());
 
@@ -28,15 +32,18 @@ const CellarList = () => {
 
     const handleExport = () => {
         const data = exportReviews().filter(r => r.inCellar);
-        const headers = ['Name', 'Region', 'Type', 'My Rating', 'AI Rating', 'Price (GBP)', 'Quantity', 'Purchase Date', 'Food Pairings', 'Notes'];
+        const headers = ['Name', 'Vintage', 'Region', 'Type', 'Grapes', 'My Rating', 'AI Rating', 'Price (GBP)', 'Quantity', 'Drinking Window', 'Purchase Date', 'Food Pairings', 'Notes'];
         const rows = data.map(r => [
             `"${r.name}"`,
+            r.vintage ?? '',
             `"${r.region}"`,
             `"${r.type}"`,
+            `"${r.grapes}"`,
             r.myRating,
             r.aiRating ?? '',
             r.priceGBP ?? '',
             r.quantity ?? 1,
+            `"${r.drinkingWindow ?? ''}"`,
             r.purchaseDate ? new Date(r.purchaseDate).toLocaleDateString() : '',
             `"${r.foodPairings}"`,
             `"${r.notes ?? ''}"`,
@@ -50,6 +57,14 @@ const CellarList = () => {
         a.click();
         URL.revokeObjectURL(url);
     };
+
+    const totalValue = wines.reduce((sum, w) => sum + (w.wine.price?.value ?? 0) * (w.quantity ?? 1), 0);
+
+    const filtered = wines.filter(w => {
+        const matchType = typeFilter === 'All' || w.wine.type === typeFilter;
+        const matchSearch = !search || w.wine.name.toLowerCase().includes(search.toLowerCase());
+        return matchType && matchSearch;
+    });
 
     if (wines.length === 0) {
         return (
@@ -65,7 +80,14 @@ const CellarList = () => {
 
     return (
         <>
-            <div className="flex justify-end mb-4">
+            {/* Header: value + export */}
+            <div className="flex items-end justify-between mb-5">
+                <div>
+                    <p className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest mb-0.5">Collection Value</p>
+                    <p className="text-2xl font-bold text-stone-800 dark:text-stone-100">
+                        £{totalValue.toLocaleString()}
+                    </p>
+                </div>
                 <button
                     onClick={handleExport}
                     className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-2xl border border-stone-200 dark:border-stone-700 hover:bg-stone-50 transition-colors"
@@ -75,8 +97,37 @@ const CellarList = () => {
                 </button>
             </div>
 
+            {/* Search */}
+            <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+                <input
+                    type="text"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Search wines…"
+                    className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-sage-500 transition-all"
+                />
+            </div>
+
+            {/* Type filter pills */}
+            <div className="flex gap-2 flex-wrap mb-5">
+                {TYPES.map(t => (
+                    <button
+                        key={t}
+                        onClick={() => setTypeFilter(t)}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                            typeFilter === t
+                                ? 'bg-sage-600 text-white'
+                                : 'bg-white dark:bg-stone-800 text-stone-500 dark:text-stone-400 border border-stone-200 dark:border-stone-700'
+                        }`}
+                    >
+                        {t}
+                    </button>
+                ))}
+            </div>
+
             <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 pb-24">
-                {wines.map((item) => (
+                {filtered.map((item) => (
                     <div key={item.id} className="bg-white dark:bg-stone-800 rounded-3xl p-4 shadow-sm border border-stone-100 dark:border-stone-700 flex flex-col relative group">
                         <button
                             onClick={() => setConfirmId(item.id)}
@@ -94,7 +145,7 @@ const CellarList = () => {
                                 {item.wine.name}
                             </h3>
                             <p className="text-xs text-stone-500 dark:text-stone-400 mb-2 truncate">
-                                {item.wine.region}
+                                {item.wine.vintage ? `${item.wine.vintage} · ` : ''}{item.wine.region}
                             </p>
 
                             <div className="flex items-center justify-between mb-2">
@@ -106,6 +157,13 @@ const CellarList = () => {
                                     £{item.wine.price?.value ?? '—'}
                                 </span>
                             </div>
+
+                            {item.wine.drinkingWindow && (
+                                <div className="flex items-center gap-1 mb-2 text-xs text-stone-500 dark:text-stone-400">
+                                    <Clock className="w-3 h-3 flex-shrink-0" />
+                                    <span className="truncate">{item.wine.drinkingWindow}</span>
+                                </div>
+                            )}
 
                             <div className="flex items-center gap-1.5 mt-2 bg-stone-50 dark:bg-stone-900/50 rounded-xl px-2 py-1.5">
                                 <Package className="w-3 h-3 text-stone-400 flex-shrink-0" />

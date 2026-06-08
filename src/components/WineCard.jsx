@@ -1,8 +1,28 @@
 import React, { useState } from 'react';
-import { Star, MapPin, Wine, Share2, MessageSquarePlus, Check, UtensilsCrossed } from 'lucide-react';
+import { Star, MapPin, Wine, Share2, MessageSquarePlus, Check, UtensilsCrossed, Leaf, Clock } from 'lucide-react';
 import { clsx } from 'clsx';
 import { saveReview } from '../services/reviewService';
 import WineImage from './WineImage';
+
+const TasteBar = ({ leftLabel, rightLabel, value }) => {
+    const pct = value != null
+        ? Math.min(100, Math.max(0, Math.round(((value - 1) / 9) * 100)))
+        : 50;
+    return (
+        <div>
+            <div className="flex justify-between text-xs text-stone-400 dark:text-stone-500 mb-1.5">
+                <span>{leftLabel}</span>
+                <span>{rightLabel}</span>
+            </div>
+            <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+                <div
+                    className="h-full bg-gradient-to-r from-sage-300 to-sage-600 rounded-full"
+                    style={{ width: `${pct}%` }}
+                />
+            </div>
+        </div>
+    );
+};
 
 export function WineCard({ wine, onReset }) {
     const [isReviewing, setIsReviewing] = useState(false);
@@ -60,12 +80,36 @@ export function WineCard({ wine, onReset }) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 mb-8">
+                <div className="flex flex-wrap items-center gap-2 mb-4">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sage-50 text-sage-700 dark:bg-sage-900/30 dark:text-sage-300 border border-sage-100 dark:border-sage-800">
                         <Wine className="w-3 h-3 mr-1.5" />
                         {wine.type}
                     </span>
+                    {wine.vintage && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300">
+                            {wine.vintage}
+                        </span>
+                    )}
                 </div>
+
+                {wine.grapes?.length > 0 && (
+                    <div className="mb-8">
+                        <h3 className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                            <Leaf className="w-3 h-3" />
+                            Grape Varieties
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                            {wine.grapes.map((grape, i) => (
+                                <span
+                                    key={i}
+                                    className="px-3 py-1 bg-stone-50 dark:bg-stone-700/50 text-stone-600 dark:text-stone-300 text-xs rounded-full border border-stone-200 dark:border-stone-600"
+                                >
+                                    {grape}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <div className="mb-8">
                     <h3 className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest mb-3">
@@ -75,6 +119,34 @@ export function WineCard({ wine, onReset }) {
                         {wine.review}
                     </p>
                 </div>
+
+                {wine.tasteProfile && (
+                    <div className="mb-8">
+                        <h3 className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest mb-4">
+                            Taste Profile
+                        </h3>
+                        <div className="space-y-4">
+                            <TasteBar leftLabel="Sweet" rightLabel="Dry" value={wine.tasteProfile.dry} />
+                            <TasteBar leftLabel="Light" rightLabel="Bold" value={wine.tasteProfile.bold} />
+                            <TasteBar leftLabel="Soft" rightLabel="Acidic" value={wine.tasteProfile.acidic} />
+                        </div>
+                    </div>
+                )}
+
+                {wine.drinkingWindow && (
+                    <div className="mb-8 p-4 bg-stone-50 dark:bg-stone-700/30 rounded-2xl border border-stone-100 dark:border-stone-700">
+                        <div className="flex items-center gap-1.5 mb-1">
+                            <Clock className="w-3.5 h-3.5 text-sage-500" />
+                            <h3 className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest">
+                                Drinking Window
+                            </h3>
+                        </div>
+                        <p className="text-base font-bold text-stone-700 dark:text-stone-200">{wine.drinkingWindow}</p>
+                        {wine.vintageNote && (
+                            <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 italic leading-relaxed">{wine.vintageNote}</p>
+                        )}
+                    </div>
+                )}
 
                 {wine.foodPairings?.length > 0 && (
                     <div className="mb-8">
