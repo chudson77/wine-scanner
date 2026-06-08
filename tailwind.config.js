@@ -35,9 +35,16 @@ export default {
         },
         terracotta: {
           50: '#fdf8f6',
-          100: '#f2e8e5', // Warm beige
+          100: '#f9ede9',
+          200: '#f2d5cc',
+          300: '#e8b5a8',
+          400: '#d99080',
           500: '#c07762', // Terracotta
           600: '#a65d4b',
+          700: '#8a4840',
+          800: '#6f3832',
+          900: '#5a2e29',
+          950: '#321715',
         }
       },
       fontFamily: {
