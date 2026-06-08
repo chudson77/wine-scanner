@@ -6,4 +6,13 @@ export default defineConfig({
   plugins: [react()],
   // Defaults to '/' for Vercel. Set VITE_BASE_PATH=/wine-scanner/ in GitHub Actions for GH Pages.
   base: process.env.VITE_BASE_PATH || '/',
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.js'],
+    coverage: {
+      reporter: ['text', 'html'],
+      include: ['src/services/**', 'src/components/**'],
+    },
+  },
 })
