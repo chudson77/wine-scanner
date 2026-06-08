@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import CameraCapture from './components/CameraCapture';
 import WineCard from './components/WineCard';
 import ReviewList from './components/ReviewList';
+import CompareView from './components/CompareView';
 import { identifyWineWithGemini } from './services/wineService';
-import { Wine, Loader2, Key, List, Camera } from 'lucide-react';
+import { Wine, Key } from 'lucide-react';
 import BottomNav from './components/BottomNav';
 import HomeDashboard from './components/HomeDashboard';
 import CellarList from './components/CellarList';
@@ -13,9 +14,8 @@ function App() {
   const [wineData, setWineData] = useState(null);
   const [apiKey, setApiKey] = useState('');
   const [showKeyInput, setShowKeyInput] = useState(true);
-  const [view, setView] = useState('home'); // 'home', 'cellar', 'scan', 'reviews'
+  const [view, setView] = useState('home'); // 'home', 'cellar', 'scan', 'reviews', 'compare'
 
-  // Load API key from storage on mount
   React.useEffect(() => {
     const storedKey = localStorage.getItem('gemini_api_key');
     if (storedKey) {
@@ -39,11 +39,6 @@ function App() {
   };
 
   const handleCapture = async (file) => {
-    if (!apiKey) {
-      alert("Please enter a valid Google Gemini API Key first.");
-      return;
-    }
-
     setStatus('analyzing');
     try {
       const data = await identifyWineWithGemini(file, apiKey);
@@ -91,7 +86,15 @@ function App() {
                 />
               </div>
               <p className="mt-2 text-xs text-center text-stone-400">
-                Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-terracotta-500 hover:underline">Google AI Studio</a>
+                Get a free key from{' '}
+                <a
+                  href="https://aistudio.google.com/app/apikey"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-terracotta-500 hover:underline"
+                >
+                  Google AI Studio
+                </a>
               </p>
             </div>
           ) : (
@@ -126,9 +129,26 @@ function App() {
             </div>
           )}
 
+          {view === 'compare' && (
+            <div className="w-full max-w-md mx-auto">
+              <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 font-serif mb-4 px-2">Compare Wines</h2>
+              <CompareView />
+            </div>
+          )}
+
           {view === 'scan' && (
             <>
-              {status === 'idle' && (
+              {!apiKey && status === 'idle' && (
+                <div className="w-full max-w-md mx-auto animate-in fade-in">
+                  <div className="p-5 bg-amber-50 dark:bg-amber-900/20 rounded-3xl border border-amber-100 dark:border-amber-800 text-center">
+                    <p className="text-amber-700 dark:text-amber-400 font-medium text-sm">
+                      Add your Gemini API key above to start scanning.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {apiKey && status === 'idle' && (
                 <div className="w-full animate-in fade-in zoom-in duration-500">
                   <CameraCapture onCapture={handleCapture} />
                 </div>
@@ -153,8 +173,8 @@ function App() {
               )}
 
               {status === 'error' && (
-                <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                  <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-3xl max-w-md mx-auto overflow-hidden border border-red-100 dark:border-red-900/30">
+                <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 w-full max-w-md mx-auto">
+                  <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-3xl border border-red-100 dark:border-red-900/30">
                     <p className="font-medium mb-2">Could not identify wine.</p>
                     <p className="text-xs font-mono bg-white/50 dark:bg-black/20 p-3 rounded-xl text-left break-all">
                       {wineData?.error || "Check your API Key and try again."}

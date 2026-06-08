@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Wine, Camera, List } from 'lucide-react';
+import { Home, Wine, Camera, List, ArrowLeftRight } from 'lucide-react';
 
 const BottomNav = ({ currentView, onViewChange }) => {
     const navItems = [
@@ -7,10 +7,11 @@ const BottomNav = ({ currentView, onViewChange }) => {
         { id: 'cellar', label: 'Cellar', icon: Wine },
         { id: 'scan', label: 'Scan', icon: Camera },
         { id: 'reviews', label: 'Reviews', icon: List },
+        { id: 'compare', label: 'Compare', icon: ArrowLeftRight },
     ];
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-stone-900 border-t border-stone-100 dark:border-stone-800 pb-safe pt-2 px-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-stone-900 border-t border-stone-100 dark:border-stone-800 pb-safe pt-2 px-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
             <div className="flex justify-between items-center max-w-md mx-auto">
                 {navItems.map((item) => {
                     const Icon = item.icon;
@@ -26,10 +27,10 @@ const BottomNav = ({ currentView, onViewChange }) => {
                                 }`}
                         >
                             <Icon
-                                className={`w-6 h-6 ${isActive ? 'fill-current' : ''}`}
+                                className={`w-5 h-5 ${isActive ? 'fill-current' : ''}`}
                                 strokeWidth={isActive ? 2.5 : 2}
                             />
-                            <span className="text-[10px] font-medium tracking-wide">
+                            <span className="text-[9px] font-medium tracking-wide">
                                 {item.label}
                             </span>
                         </button>
